@@ -51,6 +51,7 @@
             this.card2 = new System.Windows.Forms.PictureBox();
             this.card1 = new System.Windows.Forms.PictureBox();
             this.flipTimer = new System.Windows.Forms.Timer(this.components);
+            this.newGameButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.card13)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.card20)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.card12)).BeginInit();
@@ -298,11 +299,22 @@
             this.flipTimer.Interval = 2000;
             this.flipTimer.Tick += new System.EventHandler(this.flipTimer_Tick);
             // 
+            // newGameButton
+            // 
+            this.newGameButton.Location = new System.Drawing.Point(521, 30);
+            this.newGameButton.Name = "newGameButton";
+            this.newGameButton.Size = new System.Drawing.Size(75, 23);
+            this.newGameButton.TabIndex = 69;
+            this.newGameButton.Text = "New Game";
+            this.newGameButton.UseVisualStyleBackColor = true;
+            this.newGameButton.Click += new System.EventHandler(this.newGameButton_Click);
+            // 
             // boardForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(728, 574);
+            this.Controls.Add(this.newGameButton);
             this.Controls.Add(this.card13);
             this.Controls.Add(this.card20);
             this.Controls.Add(this.card12);
@@ -373,6 +385,7 @@
         private System.Windows.Forms.PictureBox card2;
         private System.Windows.Forms.PictureBox card1;
         private System.Windows.Forms.Timer flipTimer;
+        private System.Windows.Forms.Button newGameButton;
     }
 }
 

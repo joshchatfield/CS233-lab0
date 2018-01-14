@@ -68,6 +68,8 @@ namespace Memory
         // TODO:  students should write this one
         private bool IsMatch(int index1, int index2)
         {
+            string value1 = GetCardValue(index1);
+            string value2 = GetCardValue(index2);
             return true;
         }
 
@@ -91,6 +93,22 @@ namespace Memory
         // TODO:  students should write this one
         private void ShuffleCards()
         {
+            Random random = new Random();
+            int card2;
+            String filename1;
+            String filename2;
+            
+            for (int card1 = 1; card1 < 21; card1++)
+            {
+                card2 = random.Next(1, 21);
+
+                filename1 = GetCardFilename(card1);
+                filename2 = GetCardFilename(card2);
+                
+                SetCardFilename(card1, filename2);
+                SetCardFilename(card2, filename1);
+ 
+            }
         }
 
         // This method loads (shows) an image in a picture box.  Assumes that filenames
@@ -99,6 +117,15 @@ namespace Memory
         {
             PictureBox card = GetCard(i);
             card.Image = Image.FromFile(System.Environment.CurrentDirectory + "\\Cards\\" + GetCardFilename(i));
+        }
+
+        private void LoadAllCards()
+        {
+            for (int i = 1; i <= 20; i++)
+            {
+                PictureBox card = GetCard(i);
+                card.Image = Image.FromFile(System.Environment.CurrentDirectory + "\\Cards\\" + GetCardFilename(i));
+            }
         }
 
         // This method loads the image for the back of a card in a picture box
@@ -112,55 +139,86 @@ namespace Memory
         // shows (loads) the backs of all of the cards
         private void LoadAllCardBacks()
         {
-
+            for (int i = 1; i < 21; i++)
+            {
+                PictureBox card = GetCard(i);
+                card.Image = Image.FromFile(System.Environment.CurrentDirectory + "\\Cards\\black_back.jpg");
+            }
         }
 
         // Hides a picture box
         private void HideCard(int i)
         {
-
+            PictureBox card = GetCard(i);
+            card.Visible = false;
         }
 
         private void HideAllCards()
         {
-
+            for (int i = 1; i < 21; i++)
+            {
+                PictureBox card = GetCard(i);
+                card.Visible = false;
+            }
         }
 
         // shows a picture box
         private void ShowCard(int i)
         {
-
+            PictureBox card = GetCard(i);
+            card.Visible = true;
         }
 
         private void ShowAllCards()
         {
-
+            for (int i = 1; i < 21; i++)
+            {
+                PictureBox card = GetCard(i);
+                card.Visible = true;
+            }
         }
 
         // disables a picture box
         private void DisableCard(int i)
         {
-
+            PictureBox card = GetCard(i);
+            card.Enabled = false;
         }
 
         private void DisableAllCards()
         {
-
+            for (int i = 1; i < 21; i++)
+            {
+                PictureBox card = GetCard(i);
+                card.Enabled = false;
+            }
         }
 
         private void EnableCard(int i)
         {
-
+            PictureBox card = GetCard(i);
+            card.Enabled = true;
         }
 
         private void EnableAllCards()
         {
-
+            for (int i = 1; i < 21; i++)
+            {
+                PictureBox card = GetCard(i);
+                card.Enabled = true;
+            }
         }
     
         private void EnableAllVisibleCards()
         {
-
+            for (int i = 1; i < 21; i++)
+            {
+                PictureBox card = GetCard(i);
+                if (card.Visible == true)
+                {
+                    card.Enabled = true;
+                }
+            }
         }
 
         #endregion
@@ -176,6 +234,9 @@ namespace Memory
              *      to make sure that the cards are loaded successfully and that
              *      they're shuffled.  If you get all 2s, something is wrong.
             */
+            FillCardFilenames();
+            ShuffleCards();
+            LoadAllCardBacks();
         }
 
         private void card_Click(object sender, EventArgs e)
@@ -183,6 +244,20 @@ namespace Memory
             PictureBox card = (PictureBox)sender;
             int cardNumber = int.Parse(card.Name.Substring(4));
 
+            if(firstCardNumber == NOT_PICKED_YET)
+            {
+                LoadCard(cardNumber);
+                firstCardNumber = cardNumber;
+                card.Enabled = false;
+            } else
+            {
+                LoadCard(cardNumber);
+                secondCardNumber = cardNumber;
+                card.Enabled = false;
+                flipTimer.Start();
+                DisableAllCards();
+            }
+            
             /* 
              * if the first card isn't picked yet
              *      save the first card index
@@ -199,6 +274,32 @@ namespace Memory
 
         private void flipTimer_Tick(object sender, EventArgs e)
         {
+            flipTimer.Stop();
+            
+            if (GetCardValue(firstCardNumber) == GetCardValue(secondCardNumber))
+            {
+                matches++;
+                HideCard(firstCardNumber);
+                HideCard(secondCardNumber);
+                firstCardNumber = NOT_PICKED_YET;
+                secondCardNumber = NOT_PICKED_YET;
+                if(matches >= 10)
+                {
+                    MessageBox.Show("You Win!");
+                } else
+                {
+                    EnableAllVisibleCards();
+                }
+            }
+            else
+            {
+                LoadCardBack(firstCardNumber);
+                LoadCardBack(secondCardNumber);
+                firstCardNumber = NOT_PICKED_YET;
+                secondCardNumber = NOT_PICKED_YET;
+                EnableAllVisibleCards();
+            }
+
             /*
              * stop the flip timer
              * if the first card and second card are a match
@@ -222,5 +323,15 @@ namespace Memory
              */
         }
         #endregion
+
+        private void newGameButton_Click(object sender, EventArgs e)
+        {
+            matches = 0;
+            EnableAllCards();
+            FillCardFilenames();
+            ShuffleCards();
+            LoadAllCardBacks();
+            ShowAllCards();
+        }
     }
 }
